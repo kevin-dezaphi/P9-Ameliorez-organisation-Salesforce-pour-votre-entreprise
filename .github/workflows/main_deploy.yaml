@@ -41,6 +41,7 @@ jobs:
       - name: 'Generate metadata delta pull request'  # Utilisez le plug-in sfdx-git-delta pour effectuer un delta, generer le package xml dans un fichier temporaire ex : .temp
         run: | # A faire
           sgd --repo . --to "HEAD" --from "HEAD~1" --output .
+          sed -i '/__mocks__/d' package/package.xml
 
       - name: 'Déployer les métadonnées sur la branch main'
         if: github.ref == 'refs/heads/main'
