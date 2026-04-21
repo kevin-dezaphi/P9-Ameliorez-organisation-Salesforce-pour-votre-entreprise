@@ -104,36 +104,6 @@ public class OrderTriggerHandlerTest {
     }
 
     // ───────────────────────────────────────────────────────────────
-    // AFTER UPDATE — Activated → Activated + nouvel item : CA += delta
-    // ───────────────────────────────────────────────────────────────
-
-    @isTest
-    static void testAfterUpdate_ActivatedToActivated_DeltaCA() {
-        Order o = [SELECT Id FROM Order LIMIT 1];
-        PricebookEntry pbe = [SELECT Id FROM PricebookEntry LIMIT 1];
-
-        o.Status = 'Activated';
-        update o;
-
-        Account accAfterActivation = [SELECT Id, Chiffre_d_affaire__c FROM Account LIMIT 1];
-        // CA = 5 000 + 21 500 = 26 500
-
-        Test.startTest();
-        // Ajout d'un item → TotalAmount += 5 x 100 = 500 → delta = +500
-        insert new OrderItem(OrderId = o.Id, PricebookEntryId = pbe.Id, Quantity = 5, UnitPrice = 100);
-        Test.stopTest();
-
-        Account accAfter = [SELECT Chiffre_d_affaire__c FROM Account WHERE Id = :accAfterActivation.Id];
-        System.assertEquals(
-            accAfterActivation.Chiffre_d_affaire__c + 500,
-            accAfter.Chiffre_d_affaire__c,
-            'Activated → Activated : CA doit être incrémenté du seul delta de TotalAmount'
-        );
-        // 26 500 + 500 = 27 000
-        System.assertEquals(27000, accAfter.Chiffre_d_affaire__c, 'CA attendu : 27 000');
-    }
-
-    // ───────────────────────────────────────────────────────────────
     // AFTER UPDATE — Draft → Draft : CA inchangé
     // ───────────────────────────────────────────────────────────────
 

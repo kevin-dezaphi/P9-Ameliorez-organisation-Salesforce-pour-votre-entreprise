@@ -21,8 +21,6 @@ public with sharing class OrderTriggerHandler {
                     deltaTotalAmount = newOrder.TotalAmount; // Si le statut passe de non-activé à activé, on ajoute le TotalAmount
                 } else if (oldOrder.Status == 'Activated' && newOrder.Status != 'Activated') {
                     deltaTotalAmount = -oldOrder.TotalAmount; // Si le statut passe d'activé à non-activé, on soustrait le TotalAmount
-                } else if (oldOrder.Status == 'Activated' && newOrder.Status == 'Activated') {
-                    deltaTotalAmount = newOrder.TotalAmount - oldOrder.TotalAmount; // Si le statut reste activé, on calcule la différence de TotalAmount
                 }
 
                 if (deltaTotalAmount == 0) {
