@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
       - name: Install SFDX CLI and sfdx-git-delta plugin # Ce package va vous permettre de faire un delta entre votre branche et la branch ciblé. Voici la documentation : https://github.com/scolladon/sfdx-git-delta
         run: |
           npm install -g @salesforce/cli@latest
-          echo "y" | npm install sfdx-git-delta@3.3.0 -g
+          echo "y" | sf plugins install sfdx-git-delta@latest
 
       - name: 'Authentification Salesforce' # Vous devez avoir une connexion avec Salesforce pour pouvoir deployer le code à la dernière étape.
         run: |
@@ -40,7 +40,7 @@ jobs:
 
       - name: 'Generate metadata delta pull request'  # Utilisez le plug-in sfdx-git-delta pour effectuer un delta, generer le package xml dans un fichier temporaire ex : .temp
         run: | # A faire
-          sgd --repo . --to "HEAD" --from "HEAD~1" --output .
+          sf sgd source delta -r . --to "HEAD" --from "HEAD~1" -o . -i .sgdignore
 
       - name: 'Déployer les métadonnées sur la branch main'
         if: github.ref == 'refs/heads/main'
